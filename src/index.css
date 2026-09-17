@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #020408;
+  --color-accent-cyan: #38BDF8;
+  --color-accent-dawn: #FCD34D;
+  --color-text-muted: #94A3B8;
+  --color-text-subtle: #CBD5E1;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--color-void);
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-mono {
+  font-family: 'Space Mono', monospace;
+}

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import SpecularButton from './SpecularButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,33 +12,61 @@ export default function OverlayContent() {
     if (!containerRef.current) return;
     const stages = gsap.utils.toArray('.scroll-stage') as HTMLElement[];
 
-    stages.forEach((stage) => {
+    stages.forEach((stage, i) => {
       const content = stage.querySelector('.content-block');
-      if (content) {
-        gsap.fromTo(content, 
-          { opacity: 0, y: 50 },
-          { 
-            opacity: 1, 
-            y: 0, 
+      if (!content) return;
+
+      const isLast   = i === stages.length - 1; // Stage 4 — content sits at bottom
+      const isStage3 = i === 2;                  // Stage 3 — sticky dwell section
+
+      if (isLast) {
+        // Content is at the bottom of a 150vh section, so trigger when the
+        // bottom of the stage approaches the viewport bottom.
+        gsap.fromTo(content,
+          { opacity: 0, y: 60 },
+          {
+            opacity: 1,
+            y: 0,
             scrollTrigger: {
               trigger: stage,
-              start: "top center",
-              end: "center center",
-              scrub: 0.5
-            }
+              start: "70% bottom",
+              end: "bottom bottom",
+              scrub: 0.6,
+            },
           }
         );
-        gsap.to(content, {
-          opacity: 0,
-          y: -50,
+        // No fade-out for the last stage — let it stay visible.
+        return;
+      }
+
+      // Stage 3 gets a generous dwell window; all others use a standard 50/50 split.
+      const fadeInEnd    = isStage3 ? "20% center" : "center center";
+      const fadeOutStart = isStage3 ? "80% center" : "center center";
+
+      gsap.fromTo(content,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
           scrollTrigger: {
             trigger: stage,
-            start: "center center",
-            end: "bottom center",
-            scrub: 0.5
-          }
-        });
-      }
+            start: "top center",
+            end: fadeInEnd,
+            scrub: 0.5,
+          },
+        }
+      );
+
+      gsap.to(content, {
+        opacity: 0,
+        y: -50,
+        scrollTrigger: {
+          trigger: stage,
+          start: fadeOutStart,
+          end: "bottom center",
+          scrub: 0.5,
+        },
+      });
     });
 
     return () => {
@@ -51,57 +80,60 @@ export default function OverlayContent() {
       {/* Stage 1: Initial View */}
       <section className="scroll-stage h-[100vh] flex items-center px-6 md:px-24">
         <div className="content-block max-w-xl pointer-events-auto mt-24">
-          <div className="font-mono text-accent-cyan text-sm tracking-widest mb-6 border border-accent-cyan/30 bg-accent-cyan/10 inline-block px-3 py-1 rounded">
-            (1) AUTUMN COHORT - 2026
-          </div>
           <h1 className="font-serif text-5xl md:text-7xl font-light leading-tight mb-6">
-            Take the seat<br/>by the window
+            <span className="block">Building India's next</span>
+            <span className="block -mt-3 md:-mt-4">generation</span>
+            <span className="block">of businesses.</span>
           </h1>
-          <p className="text-text-muted text-lg mb-8 leading-relaxed font-light">
-            One planet, six weeks, and a telescope feed that never cuts away. You keep the recordings, the raw imagery and the reading list for a year after the cohort closes.
+          <p className="text-white/70 text-lg mb-10 leading-relaxed font-light">
+            OneClick Ventures is a platform-first venture engine based in Pune. We explore market gaps, engage the right buyers, and enable every brand we build with shared infrastructure, compliance, and go-to-market systems — so businesses reach revenue faster than they thought possible.
           </p>
-          <div className="flex flex-col gap-4 mb-8">
-            <div className="font-mono text-xs text-text-subtle tracking-widest">SIX LIVE SESSIONS - RECORDED FOR A YEAR - STARTS 14 OCTOBER</div>
-          </div>
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-            <button className="bg-white text-void px-8 py-4 rounded-full font-medium hover:bg-accent-cyan hover:text-void transition-colors uppercase tracking-wider text-sm flex items-center gap-2 cursor-pointer">
-              Reserve a ticket <span>→</span>
-            </button>
-            <a href="#" className="text-sm font-medium hover:text-white transition-colors border-b border-white/30 pb-1">Read the syllabus first</a>
+            <a href="#how-we-work" className="bg-white text-void px-8 py-4 rounded-full font-medium hover:bg-accent-cyan hover:text-void transition-colors uppercase tracking-wider text-sm flex items-center gap-2 cursor-pointer">
+              See How We Work <span>→</span>
+            </a>
           </div>
-          <p className="text-xs text-text-subtle mt-8 opacity-70">
-            Early Bird pricing held for a week. Tickets transferred freely up to 48 hours before the first session.
-          </p>
         </div>
       </section>
 
       {/* Stage 2: The Terminator */}
       <section className="scroll-stage h-[100vh] flex items-center justify-end px-6 md:px-24">
         <div className="content-block max-w-lg pointer-events-auto text-right">
-          <div className="font-mono text-accent-dawn text-sm tracking-widest mb-6">
-            SESSION 04
-          </div>
           <h2 className="font-serif text-4xl md:text-6xl font-light leading-tight mb-6">
-            Half of it is always dark.<br/>That half never sleeps.
+            Everything your business needs. Under one firm.
           </h2>
-          <p className="text-text-muted text-lg mb-8 leading-relaxed font-light ml-auto">
-            The line between day and night crosses the surface at 1,670 kilometres an hour, and almost everything worth watching happens along it: storm systems spinning up, ice shelves letting go, the ocean giving back the heat it spent all day taking in.
+          <p className="text-white/70 text-lg mb-8 leading-relaxed font-light ml-auto">
+            With every service under one roof and one accountable team, your supply chain moves the way your business demands: predictably, transparently, and without excuses.
+            <br/><br/>
+            That means no finger-pointing between vendors. No delays lost in handoffs. Just one team, accountable from origin to destination.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-end items-center">
-            <a href="#" className="text-sm font-medium hover:text-white transition-colors">SEE THE SYLLABUS</a>
-            <button className="border border-white/30 hover:border-white px-8 py-3 rounded-full font-medium transition-colors uppercase tracking-wider text-sm cursor-pointer">
-              WATCH THE SESSION &gt;
-            </button>
+            <SpecularButton
+              size="md"
+              radius={999}
+              tintOpacity={0}
+              blur={0}
+              textColor="#ffffff"
+              lineColor="#ffffff"
+              baseColor="#525252"
+              intensity={1}
+              shineSize={10}
+              shineFade={40}
+              thickness={1}
+              speed={0.35}
+              followMouse
+              proximity={250}
+              autoAnimate={false}
+            >
+              Learn More About Us &rsaquo;
+            </SpecularButton>
           </div>
         </div>
       </section>
 
       {/* Stage 3: The Blue Marble */}
-      <section className="scroll-stage h-[100vh] flex items-center justify-center px-6">
-        <div className="content-block max-w-2xl pointer-events-auto text-center mt-[40vh]">
-          <div className="font-mono text-white/50 text-sm tracking-widest mb-6">
-            MODULE 01 - THE BLUE MARBLE
-          </div>
+      <section className="scroll-stage h-[200vh] flex items-start justify-center px-6">
+        <div className="content-block max-w-2xl pointer-events-auto text-center sticky top-[50vh] -translate-y-1/2">
           <h2 className="font-serif text-4xl md:text-6xl font-light leading-tight mb-6">
             See the whole of it in a single frame
           </h2>
@@ -117,35 +149,21 @@ export default function OverlayContent() {
       {/* Stage 4: Planet Earth */}
       <section className="scroll-stage h-[150vh] flex flex-col justify-end px-6 md:px-24 pb-32">
         <div className="content-block max-w-5xl mx-auto w-full pointer-events-auto text-center">
-          <h3 className="font-mono text-accent-cyan text-xl tracking-widest mb-2">PLANET</h3>
-          <h1 className="font-serif text-[15vw] leading-none tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 text-transparent bg-clip-text">
-            EARTH
+          <h1
+            className="font-serif text-[8vw] leading-tight tracking-tighter mb-8"
+            style={{
+              background: 'linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.4) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            RELIABILITY<br />AT EVERY MILESTONE
           </h1>
-          <p className="text-text-muted text-xl max-w-2xl mx-auto mb-12 font-light">
-            Learn more about this fascinating miracle that we call our home, Planet Earth. Course enrollment starts today. Early Bird tickets typically last a week, don't miss out!
+          <p className="text-white/70 text-xl max-w-2xl mx-auto mb-12 font-light">
+            End-to-End Business Validation.<br/>
+            We provide comprehensive business validation to ensure your next venture is market-ready and operationally flawless.
           </p>
-          <button className="bg-accent-cyan text-void px-12 py-5 rounded-full font-bold hover:bg-white transition-colors uppercase tracking-widest text-lg mb-24 shadow-[0_0_40px_rgba(56,189,248,0.3)] cursor-pointer">
-            GET STARTED
-          </button>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/10 pt-12 text-left">
-            <div>
-              <div className="text-text-subtle font-mono text-sm mb-2">DIAMETER</div>
-              <div className="text-3xl font-light">12,742 <span className="text-lg text-text-muted">KM</span></div>
-            </div>
-            <div>
-              <div className="text-text-subtle font-mono text-sm mb-2">ORBITAL SPEED</div>
-              <div className="text-3xl font-light">29.78 <span className="text-lg text-text-muted">KM/S</span></div>
-            </div>
-            <div>
-              <div className="text-text-subtle font-mono text-sm mb-2">WATER COVERAGE</div>
-              <div className="text-3xl font-light">71<span className="text-lg text-text-muted">%</span></div>
-            </div>
-            <div>
-              <div className="text-text-subtle font-mono text-sm mb-2">AGE</div>
-              <div className="text-3xl font-light">4.54 <span className="text-lg text-text-muted">BN YRS</span></div>
-            </div>
-          </div>
         </div>
       </section>
 

@@ -128,7 +128,6 @@ const SpecularButton = ({
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
 
     const geometry = new Triangle(gl)
-    // @ts-expect-error ogl internal
     if (geometry.attributes.uv) delete geometry.attributes.uv
 
     const program = new Program(gl, {

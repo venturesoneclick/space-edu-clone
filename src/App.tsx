@@ -2,6 +2,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import EarthCanvas from './components/EarthCanvas';
 import OverlayContent from './components/OverlayContent';
+import ContentSections from './components/ContentSections';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 
 function App() {
@@ -18,6 +19,9 @@ function App() {
 
       {/* Scrollable DOM Content */}
       <OverlayContent />
+      
+      {/* Downward Page Content overlaying Hero */}
+      <ContentSections />
       
       <Footer />
     </div>

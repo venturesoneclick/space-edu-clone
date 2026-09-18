@@ -4,21 +4,18 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import FoldText from './FoldText';
 import SplitText from './SplitText';
 import ScrollStack, { ScrollStackItem } from './ScrollStack';
-
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ContentSections() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Refresh ScrollTrigger and Lenis to ensure proper calculations for the new DOM height
     setTimeout(() => {
       ScrollTrigger.refresh();
-      // If lenis is attached to window, triggering a resize event helps it recalculate
       window.dispatchEvent(new Event('resize'));
     }, 100);
 
-    // Staggered reveal for section contents
+    // ── Staggered reveal for dark sections ──────────────────────────────────
     const sections = gsap.utils.toArray('.content-section') as HTMLElement[];
     sections.forEach((sec) => {
       gsap.fromTo(
@@ -30,10 +27,7 @@ export default function ContentSections() {
           duration: 1,
           stagger: 0.15,
           ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sec,
-            start: 'top 80%',
-          },
+          scrollTrigger: { trigger: sec, start: 'top 80%' },
         }
       );
     });

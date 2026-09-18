@@ -3,6 +3,7 @@ import Footer from './components/Footer';
 import EarthCanvas from './components/EarthCanvas';
 import OverlayContent from './components/OverlayContent';
 import ContentSections from './components/ContentSections';
+import NextSection from './components/NextSection';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 
 function App() {
@@ -22,7 +23,10 @@ function App() {
       
       {/* Downward Page Content overlaying Hero */}
       <ContentSections />
-      
+
+      {/* Features Tabs — scroll-driven section */}
+      <NextSection />
+
       <Footer />
     </div>
   );

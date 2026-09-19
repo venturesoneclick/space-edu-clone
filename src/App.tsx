@@ -1,10 +1,25 @@
+import { Component, lazy, Suspense, type ReactNode } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import EarthCanvas from './components/EarthCanvas';
 import OverlayContent from './components/OverlayContent';
 import ContentSections from './components/ContentSections';
 import NextSection from './components/NextSection';
+import { GearboxSection } from './components/GearboxSection';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
+
+const FlyingPostersSection = lazy(() => import('./components/FlyingPostersSection'));
+
+class SectionErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    if (this.state.failed) return null
+    return this.props.children
+  }
+}
 
 function App() {
   useSmoothScroll();
@@ -12,22 +27,25 @@ function App() {
   return (
     <div className="relative w-full min-h-screen bg-void text-white selection:bg-accent-cyan/30">
       <Navbar />
-      
-      {/* Fixed Background Layer for Three.js */}
+
       <div className="fixed inset-0 z-0 pointer-events-none">
         <EarthCanvas />
       </div>
 
-      {/* Scrollable DOM Content */}
       <OverlayContent />
-      
-      {/* Downward Page Content overlaying Hero */}
       <ContentSections />
 
-      {/* Features Tabs — scroll-driven section */}
-      <NextSection />
+      <SectionErrorBoundary>
+        <Suspense fallback={null}>
+          <FlyingPostersSection />
+        </Suspense>
+      </SectionErrorBoundary>
 
-      <Footer />
+      <div className="relative z-20">
+        <NextSection />
+        <GearboxSection />
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -19,7 +19,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,27 +84,9 @@ const TOTAL_TABS = TABS.length;
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 export default function NextSection() {
-  const introWrapperRef = useRef<HTMLDivElement>(null);
-  const introPinRef     = useRef<HTMLDivElement>(null);
   const tabsSectionRef  = useRef<HTMLElement>(null);
 
   const [activeTab, setActiveTab] = useState(0);
-
-  // ── GSAP: pin the intro text card while intro wrapper scrolls away ──────────
-  useGSAP(
-    () => {
-      if (!introWrapperRef.current || !introPinRef.current) return;
-
-      ScrollTrigger.create({
-        trigger: introWrapperRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        pin: introPinRef.current,
-        pinSpacing: false,
-      });
-    },
-    { scope: introWrapperRef }
-  );
 
   // ── Passive scroll listener — drives active tab via raw scroll position ─────
   // Mirrors original vanilla JS but scoped to the section's offset.
@@ -146,79 +127,13 @@ export default function NextSection() {
 
   return (
     <>
-      {/* ──────────────────────── INTRO WRAPPER ──────────────────────── */}
-      <div
-        ref={introWrapperRef}
-        className="relative flex justify-center items-center z-[1] bg-[#f8f8f8]"
-        style={{ height: '90vh' }}
-      >
-        {/* Pinned by GSAP ScrollTrigger */}
-        <div
-          ref={introPinRef}
-          id="js-pin"
-          className="absolute w-full flex justify-center items-center"
-          style={{ top: '50px', willChange: 'transform, opacity' }}
-        >
-          <div
-            className="w-full text-center mx-auto px-6"
-            style={{ maxWidth: '30rem' }}
-          >
-            <div style={{ marginBottom: '0', marginTop: '3.5rem' }}>
-              <h2
-                style={{
-                  fontFamily: 'Poppins, sans-serif',
-                  letterSpacing: '-0.02em',
-                  fontSize: '2.8125rem',
-                  fontWeight: 500,
-                  lineHeight: 1,
-                  color: '#141414',
-                }}
-              >
-                <span
-                  style={{
-                    display: 'inline-block',
-                    borderBottom: '3px solid #61ffc9',
-                    paddingBottom: '2px',
-                  }}
-                >
-                  149€/month
-                </span>{' '}
-                &amp; not a single worry
-              </h2>
-            </div>
-            <p
-              style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontSize: '1.125rem',
-                color: '#737373',
-                marginBottom: 0,
-              }}
-            >
-              We take care of registration, insurance, and maintenance to ensure
-              you have a hassle-free ride!{' '}
-              <sup
-                style={{
-                  fontSize: '75%',
-                  lineHeight: 0,
-                  position: 'relative',
-                  verticalAlign: 'baseline',
-                  top: 0,
-                }}
-              >
-                *including theft coverage under certain conditions.
-              </sup>
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* ──────────────────────── TABS SECTION ───────────────────────── */}
       <section
         ref={tabsSectionRef}
         style={{
           zIndex: 2,
           borderRadius: '2rem',
-          backgroundColor: '#292929',
+          backgroundColor: '#020408',
           position: 'relative',
           fontFamily: 'Poppins, sans-serif',
         }}
@@ -239,7 +154,7 @@ export default function NextSection() {
           >
             {/* Sticky viewport container */}
             <div
-              style={{ height: '100vh', position: 'sticky', top: '5vh' }}
+              style={{ height: '100vh', position: 'sticky', top: '12vh' }}
             >
               {/* Max-width centering */}
               <div
@@ -256,7 +171,7 @@ export default function NextSection() {
                   style={{
                     height: '90vh',
                     display: 'grid',
-                    gridTemplateColumns: '0.4fr 1fr',
+                    gridTemplateColumns: '1fr 1fr',
                     gap: '1.5rem',
                     paddingLeft: '3.3%',
                     paddingRight: '3.3%',
@@ -292,7 +207,7 @@ function LeftPanel({ activeTab }: { activeTab: number }) {
         flexDirection: 'column',
         justifyContent: 'flex-end',
         alignItems: 'stretch',
-        padding: '1.5rem',
+        padding: '1.2rem',
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
         transform: 'translate3d(0,0,0)',

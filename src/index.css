@@ -8,6 +8,18 @@
   --color-text-subtle: #CBD5E1;
 }
 
+html,
+body,
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
 body {
   margin: 0;
   padding: 0;

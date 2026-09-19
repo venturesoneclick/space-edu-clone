@@ -5,7 +5,6 @@ import EarthCanvas from './components/EarthCanvas';
 import OverlayContent from './components/OverlayContent';
 import ContentSections from './components/ContentSections';
 import NextSection from './components/NextSection';
-import { GearboxSection } from './components/GearboxSection';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 
 const FlyingPostersSection = lazy(() => import('./components/FlyingPostersSection'));
@@ -43,7 +42,6 @@ function App() {
 
       <div className="relative z-20">
         <NextSection />
-        <GearboxSection />
         <Footer />
       </div>
     </div>

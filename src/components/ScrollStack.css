@@ -1,40 +1,67 @@
+/* ═══════════════════════════════════════════════════════════
+   Inner-scroll mode  (useWindowScroll = false, default)
+   The scroller div IS the scroll container.
+   ═══════════════════════════════════════════════════════════ */
 .scroll-stack-scroller {
   position: relative;
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  overflow-x: visible;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   will-change: scroll-position;
 }
 
 .scroll-stack-inner {
-  padding: 2vh 5rem 50rem;
+  padding: 20vh 0 50rem;
   min-height: 100vh;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Window-scroll mode  (useWindowScroll = true)
+   The scroller div is transparent — main page scroll drives
+   everything.  Must NOT be a scroll container (overflow:
+   visible) so it doesn't create a stacking context gap.
+   ═══════════════════════════════════════════════════════════ */
+.scroll-stack-scroller.scroll-stack-window {
+  overflow:          visible;
+  height:            auto;
+  overscroll-behavior: auto;
+  will-change:       auto;
+  transform:         none;
+  -webkit-transform: none;
+}
+
+/* Give the inner enough runway so cards fully animate before
+   the section exits the viewport.  Adjust 55vh if needed.   */
+.scroll-stack-scroller.scroll-stack-window .scroll-stack-inner {
+  padding:    8vh 0 55vh;
+  min-height: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Card
+   ═══════════════════════════════════════════════════════════ */
 .scroll-stack-card {
-  transform-origin: top center;
-  will-change: transform, filter;
+  transform-origin:  top center;
+  will-change:       transform, filter;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-  height: 28rem;
-  width: 100%;
-  margin: 30px 0;
-  padding: 3rem;
-  border-radius: 40px;
-  box-sizing: border-box;
+  transform-style:   preserve-3d;
+  box-shadow:        0 4px 40px rgba(0, 0, 0, 0.10);
+  width:             100%;
+  min-height:        22rem;
+  padding:           3.5rem;
+  border-radius:     2rem;
+  box-sizing:        border-box;
+  position:          relative;
   -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  position: relative;
+  transform:         translateZ(0);
 }
 
 .scroll-stack-end {
-  width: 100%;
+  width:  100%;
   height: 1px;
 }

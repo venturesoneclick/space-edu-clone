@@ -6,42 +6,59 @@ import SplitText from './SplitText';
 import ScrollStack, { ScrollStackItem } from './ScrollStack';
 gsap.registerPlugin(ScrollTrigger);
 
+const CARDS = [
+  {
+    num: '01', label: 'Explore',
+    body: 'With every service under one roof and one accountable team, your supply chain moves the way your business demands: predictably, transparently, and without excuses. That means no finger-pointing between vendors. No delays lost in handoffs. Just one team, accountable from origin to destination.',
+  },
+  {
+    num: '02', label: 'Engage',
+    body: 'Strategy without market pull is theory. We get brands in front of the right buyers, activate distribution channels, and build early traction that turns validated ideas into operating businesses with real revenue.',
+  },
+  {
+    num: '03', label: 'Enable',
+    body: 'Every venture in our portfolio runs on shared infrastructure — technology, compliance, finance, and GTM frameworks. Built once, hardened over time, and deployed across every brand we launch.',
+  },
+  {
+    num: '04', label: 'Scale',
+    body: 'Building compounding advantages — brand equity, distribution moats, and shared infrastructure — that make every subsequent venture faster to launch and easier to win.',
+  },
+];
+
 export default function ContentSections() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
+    const ctx = gsap.context(() => {
+      setTimeout(() => { ScrollTrigger.refresh(); }, 150);
 
-    // ── Staggered reveal for dark sections ──────────────────────────────────
-    const sections = gsap.utils.toArray('.content-section') as HTMLElement[];
-    sections.forEach((sec) => {
-      gsap.fromTo(
-        sec.querySelectorAll('.reveal-elem'),
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: sec, start: 'top 80%' },
-        }
-      );
-    });
+      // ── Reveal: section 1 text elements ─────────────────────────────────
+      const sections = gsap.utils.toArray('.content-section') as HTMLElement[];
+      sections.forEach((sec) => {
+        gsap.fromTo(
+          sec.querySelectorAll('.reveal-elem'),
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1, y: 0,
+            duration: 1, stagger: 0.15, ease: 'power3.out',
+            scrollTrigger: { trigger: sec, start: 'top 80%' },
+          }
+        );
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <div
       id="content-layer"
       ref={containerRef}
-      className="relative z-30 w-full min-h-screen bg-[#020408] before:absolute before:inset-x-0 before:-top-28 before:h-28 before:bg-gradient-to-t before:from-[#020408] before:to-transparent before:pointer-events-none pb-24"
+      className="relative z-30 w-full bg-[#020408] before:absolute before:inset-x-0 before:-top-28 before:h-28 before:bg-gradient-to-t before:from-[#020408] before:to-transparent before:pointer-events-none"
     >
 
-      {/* Section 1 ("Milestone") */}
-      <section className="content-section min-h-[60vh] flex flex-col justify-center px-6 md:px-24 pt-32">
+      {/* Section 1 — Hero copy */}
+      <section className="content-section min-h-[60vh] flex flex-col justify-center px-6 md:px-24 pt-32 pb-16">
         <h1 className="reveal-elem font-serif mb-8">
           <FoldText
             text={"We move freight.\nWe own\nthe outcome."}
@@ -76,10 +93,11 @@ export default function ContentSections() {
         </p>
       </section>
 
-      {/* Section 2 — ScrollStack cards */}
-      <section className="content-section" style={{ height: '130vh' }}>
+      {/* Section 2 — ScrollStack driven by main window scroll (no inner Lenis) */}
+      <section className="content-section px-6 md:px-16">
         <ScrollStack
-          itemDistance={100}
+          useWindowScroll
+          itemDistance={120}
           itemScale={0.03}
           itemStackDistance={30}
           stackPosition="20%"
@@ -88,37 +106,19 @@ export default function ContentSections() {
           blurAmount={0}
           rotationAmount={0}
         >
-          <ScrollStackItem itemClassName="bg-[#f5f3ef] border border-white/20">
-            <h2 className="text-gray-900 text-4xl font-serif tracking-wide mb-5 font-bold">01 / Explore</h2>
-            <p className="text-gray-900 font-light leading-relaxed text-2xl text-justify hyphens-auto">
-              With every service under one roof and one accountable team, your supply chain moves the way your business demands: predictably, transparently, and without excuses.
-              <br/><br/>
-              That means no finger-pointing between vendors. No delays lost in handoffs. Just one team, accountable from origin to destination.
-            </p>
-          </ScrollStackItem>
-
-          <ScrollStackItem itemClassName="bg-[#f5f3ef] border border-white/20">
-            <h2 className="text-gray-900 text-4xl font-serif tracking-wide mb-5 font-bold">02 / Engage</h2>
-            <p className="text-gray-900 font-light leading-relaxed text-2xl text-justify hyphens-auto">
-              Strategy without market pull is theory. We get brands in front of the right buyers, activate distribution channels, and build early traction that turns validated ideas into operating businesses with real revenue.
-            </p>
-          </ScrollStackItem>
-
-          <ScrollStackItem itemClassName="bg-[#f5f3ef] border border-white/20">
-            <h2 className="text-gray-900 text-4xl font-serif tracking-wide mb-5 font-bold">03 / Enable</h2>
-            <p className="text-gray-900 font-light leading-relaxed text-2xl text-justify hyphens-auto">
-              Every venture in our portfolio runs on shared infrastructure — technology, compliance, finance, and GTM frameworks. Built once, hardened over time, and deployed across every brand we launch.
-            </p>
-          </ScrollStackItem>
-
-          <ScrollStackItem itemClassName="bg-[#f5f3ef] border border-white/20">
-            <h2 className="text-gray-900 text-4xl font-serif tracking-wide mb-5 font-bold">04 / Scale</h2>
-            <p className="text-gray-900 font-light leading-relaxed text-2xl text-justify hyphens-auto">
-              Building compounding advantages — brand equity, distribution moats, and shared infrastructure — that make every subsequent venture faster to launch and easier to win.
-            </p>
-          </ScrollStackItem>
+          {CARDS.map(({ num, label, body }) => (
+            <ScrollStackItem key={num} itemClassName="bg-[#f5f3ef] border border-black/5">
+              <h2 className="text-gray-900 text-4xl font-serif tracking-wide mb-5 font-bold">
+                {num} / {label}
+              </h2>
+              <p className="text-gray-900 font-light leading-relaxed text-2xl text-justify hyphens-auto">
+                {body}
+              </p>
+            </ScrollStackItem>
+          ))}
         </ScrollStack>
       </section>
+
     </div>
   );
 }
